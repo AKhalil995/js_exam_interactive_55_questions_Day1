@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JavaScript Core — Interactive Exam (55 Questions)</title>
+  <style>
+    :root{
+      --bg:#0f172a;/*slate-900*/
+      --panel:#111827ee;/*gray-900*/
+      --card:#1f2937;/*gray-800*/
+      --ink:#e5e7eb;/*gray-200*/
+      --muted:#93c5fd;/*blue-300*/
+      --brand:#60a5fa;/*blue-400*/
+      --accent:#34d399;/*emerald-400*/
+      --warn:#fbbf24;/*amber-400*/
+      --error:#f87171;/*red-400*/
+    }
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#020617);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    header{position:sticky;top:0;background:linear-gradient(180deg,var(--panel),#0b1220ee);backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid #1f2937}
+    .wrap{max-width:1050px;margin-inline:auto;padding:16px}
+    h1{margin:0;font-size:clamp(20px,3vw,28px)}
+    .sub{color:var(--muted)}
+    .grid{display:grid;gap:18px}
+    @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+    section{background:var(--card);border:1px solid #374151;border-radius:16px;padding:18px}
+    h2{margin:.2rem 0 1rem;font-size:clamp(18px,2.2vw,24px);color:#bfdbfe}
+    .q{border:1px solid #374151;border-radius:12px;padding:14px;margin:12px 0;background:#111827}
+    .q h3{margin:.2rem 0 .6rem;font-size:16px}
+    .choices{display:grid;gap:8px;margin:.5rem 0}
+    .choices label{display:flex;gap:10px;align-items:flex-start;background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;cursor:pointer}
+    .choices input{margin-top:3px}
+    code, pre{background:#0b1220;border:1px solid #1f2937;padding:.2rem .4rem;border-radius:6px}
+    pre{padding:12px;overflow:auto}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+    .btn{border:1px solid #1f2937;background:#0b1220;color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer}
+    .btn:hover{border-color:#374151}
+    .reveal{margin-left:auto}
+    .ans{display:none;margin-top:8px;border-top:1px dashed #334155;padding-top:8px}
+    .right{color:var(--accent)}
+    .wrong{color:var(--error)}
+    .muted{color:#9ca3af}
+    .scorebar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid #334155;background:#0b1220}
+    footer{color:#94a3b8;text-align:center;padding:24px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    textarea{width:100%;min-height:120px;background:#0b1220;color:var(--ink);border:1px solid #1f2937;border-radius:10px;padding:10px}
+    input[type="text"], input[type="search"]{width:100%;background:#0b1220;color:var(--ink);border:1px solid #1f2937;border-radius:10px;padding:10px}
+    .badge{font-size:12px;color:#93c5fd}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>JavaScript Core — Interactive Exam <span class="sub">(30 MCQs · 20 Output · 5 Code)</span></h1>
+      <div class="scorebar" id="scorebar">
+        <span class="pill">MCQs: <b id="mScore">0</b>/<span id="mTotal">0</span></span>
+        <span class="pill">Output: <b id="oScore">0</b>/<span id="oTotal">0</span></span>
+        <span class="pill">Code: <b id="cScore">0</b>/<span id="cTotal">0</span></span>
+        <span class="pill">Overall: <b id="tScore">0</b>/<span id="tTotal">0</span></span>
+        <button class="btn" id="submitAll">Submit All</button>
+        <button class="btn" id="resetAll">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="mcq">
+      <h2>1) Multiple‑Choice Questions (30)</h2>
+      <div id="mcqWrap"></div>
+    </section>
+
+    <section id="output">
+      <h2>2) What’s the Output? (20)</h2>
+      <p class="muted">Type the exact output as it would appear in the console. Whitespace is ignored; lines are normalized.</p>
+      <div id="outWrap"></div>
+    </section>
+
+    <section id="code">
+      <h2>3) Code Writing (5)</h2>
+      <p class="muted">Write the function exactly as specified. On submit, your code runs against tests. You can reveal a sample solution if you’re stuck.</p>
+      <div id="codeWrap"></div>
+    </section>
+  </main>
+
+  <footer>
+    Built for practice: types, values, operators, arrays, strings, scope, functions, <span class="mono">arguments</span>, Math, Date, and more.
+  </footer>
+
+<script>
+// ---------- Data ----------
+const MCQS = [
+  {q:"JavaScript is ______.", c:["case-insensitive","case-sensitive","space-sensitive","whitespace-insensitive"], a:1, e:"Identifiers/keywords must match exact casing (e.g., while ≠ WHILE)."},
+  {q:"Which are primitive types in ES5?", c:["number, string, boolean, null, undefined","object, array, function","date, regex, map","number, bigint, symbol"], a:0, e:"Primitive set (ES5): number, string, boolean, null, undefined."},
+  {q:"What does <code>typeof null</code> return?", c:["\"null\"","\"object\"","\"undefined\"","throws"], a:1, e:"Legacy quirk: typeof null === 'object'."},
+  {q:"Default separator used by <code>Array.prototype.join()</code> when none is provided:", c:["space","comma","semicolon","empty string"], a:1, e:"Join defaults to a comma."},
+  {q:"<code>delete a[1]</code> does what to an array’s length?", c:["Decreases length","Increases length","No change","Sets to 0"], a:2, e:"<code>delete</code> creates a hole but length is unchanged."},
+  {q:"<code>Number(\"0x11\")</code> yields:", c:["NaN","11","17","0"], a:2, e:"Hex 0x11 equals decimal 17."},
+  {q:"The binary <code>+</code> operator with one operand a string will:", c:["always add numerically","throw","concatenate (coerce to string)","coerce to number then add"], a:2, e:"String + anything → string concatenation."},
+  {q:"Which statement about <code>forEach</code> is true?", c:["You can break with <code>break</code>","It returns a new array","It skips holes in sparse arrays","It returns the sum of items"], a:2, e:"<code>forEach</code> skips missing indices and returns <code>undefined</code>."},
+  {q:"<code>Array.prototype.sort()</code> with no comparator sorts:", c:["Numerically ascending","Alphabetically by UTF-16 code units","Case-insensitive alphabetically","By type then value"], a:1, e:"Default is lexicographic (e.g., 1111 < 2)."},
+  {q:"Which Date method returns months 0–11?", c:["getUTCMonth()","getFullYear()","getMonth()","getDate()"], a:2, e:"<code>getMonth()</code> is zero-based (0–11)."},
+  {q:"Which converts a numeric string to a number?", c:["String(\"3\")","Number(\"3\")","Boolean(\"3\")","Object(\"3\")"], a:1, e:"<code>Number(\"3\") → 3</code>."},
+  {q:"Result of <code>parseInt(\"0.1\")</code> is:", c:["0.1","0","NaN","1"], a:1, e:"<code>parseInt</code> parses up to the dot → 0."},
+  {q:"<code>Math.random()</code> returns a number in:", c:["(0,1]","[0,1]","[0,1)","(0,1)"], a:2, e:"<code>0 ≤ x < 1</code>."},
+  {q:"Which statement about variables is true?", c:["Undeclared assignment inside a function creates a local","<code>var</code> declarations are block-scoped","Reading a <code>var</code> before its declaration yields <code>undefined</code>","You can declare with <code>let</code> in ES5"], a:2, e:"Hoisted <code>var</code> is initialized to <code>undefined</code>."},
+  {q:"<code>null == undefined</code> evaluates to:", c:["true","false","throws","Depends on mode"], a:0, e:"Abstract equality says null == undefined is true; but not <code>===</code>."},
+  {q:"Which of these is NOT a Boolean <em>primitive</em> truthy?", c:["[]","{}","new Boolean(false)","\"\" (empty string)"], a:3, e:"Empty string is falsy; Boolean object is truthy."},
+  {q:"Calling <code>eval(\"3+2\")</code> returns:", c:["A function","The string \"3+2\"","5","undefined"], a:2, e:"It evaluates the expression string to 5."},
+  {q:"<code>arguments</code> inside a non‑arrow function is:", c:["A real Array","An array‑like object","Always empty","Only in strict mode"], a:1, e:"Array‑like: has <code>length</code>, index access; not full Array methods."},
+  {q:"String method to get last character:", c:["substr(-1)","charAt(length-1)","slice(-1)","All of these work"], a:3, e:"All can retrieve the last character in various ways."},
+  {q:"Which is true about arrays in JS?", c:["Fixed length","Typed elements","Indices can be sparse","Must start at index 1"], a:2, e:"Arrays are dynamic and can have holes (sparse)."},
+  {q:"<code>Array.length = 0</code> does:", c:["Nothing","Deletes all elements","Throws","Reverses array"], a:1, e:"Resets to empty array."},
+  {q:"<code>String</code> escape for newline is:", c:["\\t","\\n","\\r","\\0"], a:1, e:"\\n is newline."},
+  {q:"<code>Function.prototype.bind(thisArg)</code> returns:", c:["A bound function","A method name","An event listener","undefined"], a:0, e:"It creates a new function with bound <code>this</code>."},
+  {q:"Which is true about <code>for...in</code> on arrays?", c:["Iterates numeric order only","Iterates enumerable keys (including non-index)","Skips all holes","Same as <code>forEach</code>"], a:1, e:"It iterates over enumerable property keys, not guaranteed order."},
+  {q:"<code>Boolean(\"0\")</code> is:", c:["false","true","NaN","throws"], a:1, e:"Any non‑empty string is truthy."},
+  {q:"<code>Number.isNaN('foo')</code> is:", c:["true","false","throws","undefined"], a:1, e:"<code>Number.isNaN</code> is strict: only NaN is NaN."},
+  {q:"<code>Array.filter()</code> returns:", c:["A boolean","The same array","A new array of elements passing the test","The index of the first match"], a:2, e:"It constructs a new array of elements where predicate is truthy."},
+  {q:"<code>Array.every()</code> stops when:", c:["All elements visited","Predicate first returns falsy","Encountering a hole","At length/2"], a:1, e:"It short‑circuits on first falsy result."},
+  {q:"Default parameters pre‑ES6 often used:", c:["<code>param = param || def</code>","<code>typeof param !== 'undefined' ? param : def</code>","Both A and B","None"], a:2, e:"Both idioms exist; the <code>typeof</code> check preserves falsy values like 0."},
+  {q:"<code>new Date().getDay()</code> returns:", c:["1–7 (Mon–Sun)","0–6 (Sun–Sat)","0–6 (Mon–Sun)","1–7 (Sun–Sat)"], a:1, e:"Sunday is 0."}
+];
+
+const OUTPUTS = [
+  {q:`What is printed?\n\n<pre>console.log(typeof null);</pre>`, a:"object", e:"Legacy quirk: typeof null → 'object'."},
+  {q:`What is printed?\n\n<pre>console.log(1 + "2" + 3);</pre>`, a:"123", e:"String concatenation once a string participates."},
+  {q:`What is printed?\n\n<pre>console.log("5" - 2);</pre>`, a:"3", e:"'-' coerces to number: 5 − 2 = 3."},
+  {q:`What is printed?\n\n<pre>var x; console.log(x);</pre>`, a:"undefined", e:"Uninitialized <code>var</code> is <code>undefined</code>."},
+  {q:`What is printed?\n\n<pre>var a=[1,2,3]; delete a[1]; console.log(a.length);</pre>`, a:"3", e:"Delete leaves a hole; length unchanged."},
+  {q:`What is printed?\n\n<pre>console.log(Number("0x11"));</pre>`, a:"17", e:"Hex 0x11 → 17."},
+  {q:`What is printed?\n\n<pre>console.log(parseInt("0.1"));</pre>`, a:"0", e:"Parses up to the dot as integer."},
+  {q:`What is printed?\n\n<pre>console.log(parseFloat(".1"));</pre>`, a:"0.1", e:"'.1' is valid → 0.1."},
+  {q:`What is printed?\n\n<pre>var x=true; console.log(x + 2);</pre>`, a:"3", e:"true coerces to 1 in numeric +."},
+  {q:`What is printed?\n\n<pre>console.log("hello".toUpperCase());</pre>`, a:"HELLO", e:"Uppercased string."},
+  {q:`What is printed?\n\n<pre>var s="hello"; console.log(s.charAt(s.length-1));</pre>`, a:"o", e:"Last character."},
+  {q:`What is printed?\n\n<pre>console.log(Math.floor(3.9));</pre>`, a:"3", e:"<code>floor</code> rounds down."},
+  {q:`What is printed?\n\n<pre>var d=new Date(2020,0,1); console.log(d.getMonth());</pre>`, a:"0", e:"January is 0."},
+  {q:`What is printed?\n\n<pre>function f(){ console.log(a); var a=2; } f();</pre>`, a:"undefined", e:"Hoisted <code>var a</code> is undefined at log time."},
+  {q:`What is printed?\n\n<pre>var scope="global"; function g(){ scope="local"; return scope; }\nconsole.log(g(), scope);</pre>`, a:"local local", e:"Implicitly reassigns global <code>scope</code>."},
+  {q:`What is printed?\n\n<pre>function h(){ console.log(arguments.length);} h(1,2,3);</pre>`, a:"3", e:"<code>arguments.length</code> equals number of passed args."},
+  {q:`What is printed?\n\n<pre>var s="a\nb"; console.log(s.length);</pre>`, a:"3", e:"Characters: 'a', newline, 'b'."},
+  {q:`What is printed?\n\n<pre>console.log(["a","b"].join(""));</pre>`, a:"ab", e:"Joined with empty separator."},
+  {q:`What is printed?\n\n<pre>var b=new Boolean(false); if(b){ console.log("Yes"); } else { console.log("No"); }</pre>`, a:"Yes", e:"Boolean objects are truthy even if wrapping false."},
+  {q:`What is printed?\n\n<pre>var n = Number("foo"); console.log(isNaN(n));</pre>`, a:"true", e:"Non‑numeric string → NaN; <code>isNaN(NaN)</code> is true."}
+];
+
+const CODE = [
+  {
+    title:"1) vowel_count(str)",
+    prompt:"Return the number of vowels (a,e,i,o,u) in a string, case‑insensitive.",
+    fn:"vowel_count",
+    tests:[
+      {args:["The quick brown fox"], expect:5},
+      {args:["bcd"], expect:0},
+      {args:["AEIOU"], expect:5}
+    ],
+    solution:`function vowel_count(str){\n  str = String(str || "");\n  var vowels = 'aeiouAEIOU';\n  var c = 0;\n  for(var i=0;i<str.length;i++){ if(vowels.indexOf(str[i])!==-1) c++; }\n  return c;\n}`
+  },
+  {
+    title:"2) sumAll(...)",
+    prompt:"Write <code>function sumAll()</code> that returns the sum of all arguments using <code>arguments</code>.",
+    fn:"sumAll",
+    tests:[
+      {args:[1,2,3], expect:6},
+      {args:[], expect:0},
+      {args:[10], expect:10}
+    ],
+    solution:`function sumAll(){\n  var s=0;\n  for(var i=0;i<arguments.length;i++){ s += Number(arguments[i])||0; }\n  return s;\n}`
+  },
+  {
+    title:"3) first(array, n)",
+    prompt:"Return first element if <code>n</code> is omitted; if <code>n &lt; 0</code> return <code>[]</code>; otherwise return first <code>n</code> elements.",
+    fn:"first",
+    tests:[
+      {args:[[1,2,3,4]], expect:1},
+      {args:[[1,2,3,4],2], expect:[1,2]},
+      {args:[[1,2,3],-1], expect:[]}
+    ],
+    solution:`function first(array, n){\n  if(typeof n === 'undefined') return array[0];\n  if(n < 0) return [];\n  return array.slice(0,n);\n}`
+  },
+  {
+    title:"4) filterBig(arr)",
+    prompt:"Return a new array containing only values ≥ 10 using <code>Array.filter</code>.",
+    fn:"filterBig",
+    tests:[
+      {args:[[12,5,8,130,44]], expect:[12,130,44]},
+      {args:[[1,2,3]], expect:[]}
+    ],
+    solution:`function filterBig(arr){\n  return arr.filter(function(v){ return v >= 10; });\n}`
+  },
+  {
+    title:"5) fullName(first, middle, last)",
+    prompt:"Return \"first middle last\". If <code>middle</code> is missing, default to \"Test\"; if <code>last</code> is missing, omit it (no trailing space).",
+    fn:"fullName",
+    tests:[
+      {args:["Nadia"], expect:"Nadia Test"},
+      {args:["Nadia","Saleh"], expect:"Nadia Saleh"},
+      {args:["Nadia","Saleh","Koura"], expect:"Nadia Saleh Koura"}
+    ],
+    solution:`function fullName(first, middle, last){\n  if(typeof middle === 'undefined') middle = 'Test';\n  var parts = [first, middle];\n  if(typeof last !== 'undefined' && last !== '') parts.push(last);\n  return parts.join(' ');\n}`
+  }
+];
+
+// ---------- Renderers ----------
+const mcqWrap = document.getElementById('mcqWrap');
+const outWrap = document.getElementById('outWrap');
+const codeWrap = document.getElementById('codeWrap');
+
+document.getElementById('mTotal').textContent = MCQS.length;
+document.getElementById('oTotal').textContent = OUTPUTS.length;
+document.getElementById('cTotal').textContent = CODE.length;
+document.getElementById('tTotal').textContent = MCQS.length + OUTPUTS.length + CODE.length;
+
+function el(tag, opts={}){
+  const e = document.createElement(tag);
+  if(opts.class) e.className = opts.class;
+  if(opts.html) e.innerHTML = opts.html;
+  if(opts.text) e.textContent = opts.text;
+  if(opts.attrs) for(const [k,v] of Object.entries(opts.attrs)) e.setAttribute(k,v);
+  return e;
+}
+
+function renderMCQ(){
+  MCQS.forEach((q,idx)=>{
+    const box = el('div',{class:'q'});
+    box.dataset.kind = 'mcq';
+    box.dataset.index = idx;
+    const title = el('h3',{html:`Q${idx+1}. ${q.q}`});
+    box.appendChild(title);
+    const list = el('div',{class:'choices'});
+    q.c.forEach((opt,i)=>{
+      const id = `m_${idx}_${i}`;
+      const lab = el('label');
+      const inp = el('input',{attrs:{type:'radio',name:`mcq_${idx}`,id}});
+      lab.appendChild(inp);
+      const span = el('span',{html:opt});
+      lab.appendChild(span);
+      list.appendChild(lab);
+    });
+    box.appendChild(list);
+    const row = el('div',{class:'row'});
+    const reveal = el('button',{class:'btn reveal',text:'Reveal Answer'});
+    reveal.addEventListener('click',()=>{
+      ans.style.display = ans.style.display==='block'?'none':'block';
+    });
+    row.appendChild(reveal);
+    box.appendChild(row);
+    const ans = el('div',{class:'ans',html:`<div><span class="badge">Correct:</span> <b>${String.fromCharCode(65+q.a)}</b> — ${q.c[q.a]}</div><div class="muted">${q.e||''}</div>`});
+    box.appendChild(ans);
+    mcqWrap.appendChild(box);
+  });
+}
+
+function renderOutput(){
+  OUTPUTS.forEach((q,idx)=>{
+    const box = el('div',{class:'q'});
+    box.dataset.kind = 'out';
+    box.dataset.index = idx;
+    const title = el('h3',{html:`Q${idx+1}. ${q.q}`});
+    box.appendChild(title);
+    const input = el('input',{attrs:{type:'text',placeholder:'Type exact output...'}});
+    box.appendChild(input);
+    const row = el('div',{class:'row'});
+    const reveal = el('button',{class:'btn reveal',text:'Reveal Answer'});
+    reveal.addEventListener('click',()=>{ ans.style.display = ans.style.display==='block'?'none':'block'; });
+    row.appendChild(reveal);
+    box.appendChild(row);
+    const ans = el('div',{class:'ans',html:`<div><span class="badge">Expected:</span> <b class="mono">${q.a}</b></div><div class="muted">${q.e||''}</div>`});
+    box.appendChild(ans);
+    outWrap.appendChild(box);
+  });
+}
+
+function renderCode(){
+  CODE.forEach((t,idx)=>{
+    const box = el('div',{class:'q'});
+    box.dataset.kind = 'code';
+    box.dataset.index = idx;
+    const title = el('h3',{html:`Q${idx+1}. ${t.title}`});
+    box.appendChild(title);
+    const p = el('div',{class:'muted',html:t.prompt});
+    box.appendChild(p);
+    const ta = el('textarea');
+    ta.placeholder = `// write your function here\nfunction ${t.fn}(){\n  // ...\n}`;
+    box.appendChild(ta);
+    const row = el('div',{class:'row'});
+    const runBtn = el('button',{class:'btn',text:'Run Tests (this question)'});
+    const reveal = el('button',{class:'btn reveal',text:'Reveal Sample Solution'});
+    row.appendChild(runBtn);
+    row.appendChild(reveal);
+    box.appendChild(row);
+    const output = el('div',{class:'ans'});
+    box.appendChild(output);
+    reveal.addEventListener('click',()=>{
+      output.style.display = output.style.display==='block'?'none':'block';
+      output.innerHTML = `<div><span class="badge">Sample Solution:</span></div><pre class="mono">${escapeHtml(t.solution)}</pre>`;
+    });
+
+    runBtn.addEventListener('click',()=>{
+      const res = gradeSingleCode(t, ta.value);
+      output.style.display = 'block';
+      const passed = res.passedTests;
+      const total = res.totalTests;
+      output.innerHTML = `<div><span class="badge">Tests:</span> ${passed}/${total} ${passed===total?'<span class="right">✓ Passed</span>':'<span class="wrong">✗ Some failed</span>'}</div>` +
+        `<pre class="mono">${escapeHtml(res.log)}</pre>`;
+    });
+
+    codeWrap.appendChild(box);
+  });
+}
+
+renderMCQ();
+renderOutput();
+renderCode();
+
+// ---------- Grading ----------
+function escapeHtml(s){
+  return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+function norm(s){
+  return String(s).trim().replace(/\r/g,'').replace(/[\t ]+/g,' ').replace(/\n+/g,'\n');
+}
+
+function gradeAll(){
+  let mScore=0, oScore=0, cScore=0;
+
+  // MCQs
+  const mcqBoxes = mcqWrap.querySelectorAll('.q');
+  mcqBoxes.forEach(box=>{
+    const idx = Number(box.dataset.index);
+    const sel = box.querySelector('input[type=radio]:checked');
+    if(sel){
+      const picked = Number(sel.id.split('_').pop());
+      if(picked === MCQS[idx].a){ mScore++; mark(box,true); }
+      else { mark(box,false,`Correct: ${String.fromCharCode(65+MCQS[idx].a)}`); }
+    } else { mark(box,false,'No answer'); }
+  });
+
+  // Outputs
+  const outBoxes = outWrap.querySelectorAll('.q');
+  outBoxes.forEach(box=>{
+    const idx = Number(box.dataset.index);
+    const input = box.querySelector('input');
+    const ok = norm(input.value) === norm(OUTPUTS[idx].a);
+    if(ok) { oScore++; mark(box,true); }
+    else { mark(box,false,`Expected: ${OUTPUTS[idx].a}`); }
+  });
+
+  // Code
+  const codeBoxes = codeWrap.querySelectorAll('.q');
+  codeBoxes.forEach(box=>{
+    const idx = Number(box.dataset.index);
+    const ta = box.querySelector('textarea');
+    const res = gradeSingleCode(CODE[idx], ta.value);
+    const ok = res.passedTests === res.totalTests && res.totalTests>0;
+    if(ok){ cScore++; mark(box,true); }
+    else { mark(box,false, `${res.passedTests}/${res.totalTests} tests passed`); }
+  });
+
+  const tScore = mScore + oScore + cScore;
+  document.getElementById('mScore').textContent = mScore;
+  document.getElementById('oScore').textContent = oScore;
+  document.getElementById('cScore').textContent = cScore;
+  document.getElementById('tScore').textContent = tScore;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function mark(box, ok, note=''){
+  box.style.outline = `2px solid ${ok? 'var(--accent)':'var(--error)'}`;
+  if(note){
+    let inf = box.querySelector('.infoNote');
+    if(!inf){ inf = el('div',{class:'muted infoNote'}); box.appendChild(inf); }
+    inf.innerHTML = ok ? `<span class="right">✓ Correct</span>` : `<span class="wrong">✗ ${escapeHtml(note)}</span>`;
+  }
+}
+
+function resetAll(){
+  // radios
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  // outputs
+  document.querySelectorAll('#outWrap input[type=text]').forEach(i=>i.value='');
+  // code
+  document.querySelectorAll('#codeWrap textarea').forEach(t=>t.value='');
+  // visuals
+  document.querySelectorAll('.q').forEach(q=>{ q.style.outline='none'; q.querySelectorAll('.infoNote').forEach(n=>n.remove()); q.querySelectorAll('.ans').forEach(a=>a.style.display='none'); });
+  // scores
+  document.getElementById('mScore').textContent='0';
+  document.getElementById('oScore').textContent='0';
+  document.getElementById('cScore').textContent='0';
+  document.getElementById('tScore').textContent='0';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function gradeSingleCode(task, userCode){
+  const log = [];
+  let passed = 0; let total = task.tests.length;
+  const header = `// sandbox wrapper\n"use strict";\nvar __result = {};`;
+  const body = `${userCode}\n;return (typeof ${task.fn} === 'function') ? ${task.fn} : undefined;`;
+  let fn;
+  try{ fn = (new Function(header + body))(); }
+  catch(e){ return {passedTests:0,totalTests:total,log:`Syntax/Runtime while defining function: ${e.message}`}; }
+  if(typeof fn !== 'function'){
+    return {passedTests:0,totalTests:total,log:`Function '${task.fn}' not found. Make sure to declare exactly: function ${task.fn}(...) { ... }`};
+  }
+  for(let i=0;i<task.tests.length;i++){
+    const t = task.tests[i];
+    try{
+      const out = fn.apply(null, t.args);
+      const ok = deepEqual(out, t.expect);
+      if(ok) { passed++; log.push(`Test ${i+1}: ✓`); }
+      else { log.push(`Test ${i+1}: ✗ Expected ${JSON.stringify(t.expect)} but got ${JSON.stringify(out)}`); }
+    }catch(e){ log.push(`Test ${i+1}: ✗ Error: ${e.message}`); }
+  }
+  return {passedTests:passed,totalTests:total,log:log.join('\n')};
+}
+
+function deepEqual(a,b){
+  if(a===b) return true;
+  if(Array.isArray(a) && Array.isArray(b)){
+    if(a.length!==b.length) return false;
+    for(let i=0;i<a.length;i++) if(!deepEqual(a[i],b[i])) return false;
+    return true;
+  }
+  if(typeof a==='object' && typeof b==='object' && a && b){
+    const ka = Object.keys(a), kb = Object.keys(b);
+    if(ka.length!==kb.length) return false;
+    for(const k of ka) if(!deepEqual(a[k],b[k])) return false;
+    return true;
+  }
+  return false;
+}
+
+// Wire buttons
+ document.getElementById('submitAll').addEventListener('click', gradeAll);
+ document.getElementById('resetAll').addEventListener('click', resetAll);
+</script>
+</body>
+</html>
